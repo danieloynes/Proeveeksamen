@@ -1,69 +1,124 @@
-// API-funksjoner for å kommunisere med PHP-backend
-function api_getAnimals() {
-    return fetch('php/get_animals.php')
-        .then(response => response.json())
-        .catch(error => {
-            console.error('Feil ved henting av dyr:', error);
-            return [];
+/**
+ * API functions for communicating with the backend
+ */
+
+// Base URL for API requests
+const API_BASE_URL = 'php/';
+
+/**
+ * Get all animals
+ * @returns {Promise} Promise object with animal data
+ */
+async function getAnimals() {
+    try {
+        const response = await fetch(`${API_BASE_URL}get_animals.php`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching animals:', error);
+        return [];
+    }
+}
+
+/**
+ * Get all owners
+ * @returns {Promise} Promise object with owner data
+ */
+async function getOwners() {
+    try {
+        const response = await fetch(`${API_BASE_URL}get_owners.php`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching owners:', error);
+        return [];
+    }
+}
+
+/**
+ * Add a new animal
+ * @param {Object} animalData - The animal data to be added
+ * @returns {Promise} Promise object with response data
+ */
+async function addAnimal(animalData) {
+    try {
+        const formData = new FormData();
+        for (const key in animalData) {
+            formData.append(key, animalData[key]);
+        }
+        
+        const response = await fetch(`${API_BASE_URL}add_animal.php`, {
+            method: 'POST',
+            body: formData
         });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error adding animal:', error);
+        return { success: false, message: 'Failed to add animal' };
+    }
 }
 
-function api_getOwners() {
-    return fetch('php/get_owners.php')
-        .then(response => response.json())
-        .catch(error => {
-            console.error('Feil ved henting av eiere:', error);
-            return [];
+/**
+ * Add a new owner
+ * @param {Object} ownerData - The owner data to be added
+ * @returns {Promise} Promise object with response data
+ */
+async function addOwner(ownerData) {
+    try {
+        const formData = new FormData();
+        for (const key in ownerData) {
+            formData.append(key, ownerData[key]);
+        }
+        
+        const response = await fetch(`${API_BASE_URL}add_owner.php`, {
+            method: 'POST',
+            body: formData
         });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error adding owner:', error);
+        return { success: false, message: 'Failed to add owner' };
+    }
 }
 
-function api_addAnimal(name, species, birth_date) {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('species', species);
-    formData.append('birth_date', birth_date);
-    
-    return fetch('php/add_animal.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .catch(error => {
-        console.error('Feil ved registrering av dyr:', error);
-        return { status: 'error', message: 'Nettverksfeil ved registrering' };
-    });
-}
-
-function api_addOwner(firstname, lastname, phone, email) {
-    const formData = new FormData();
-    formData.append('firstname', firstname);
-    formData.append('lastname', lastname);
-    formData.append('phone', phone);
-    formData.append('email', email);
-    
-    return fetch('php/add_owner.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .catch(error => {
-        console.error('Feil ved registrering av eier:', error);
-        return { status: 'error', message: 'Nettverksfeil ved registrering' };
-    });
-}
-
-function api_connectAnimalOwner(animal_id, owner_id) {
-    const formData = new FormData();
-    formData.append('animal_id', animal_id);
-    formData.append('owner_id', owner_id);
-    
-    return fetch('php/connect_animal_owner.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .catch(error => {
-        console.error('Feil ved tilkobling av dyr til eier:', error);
-        return { status: 'error', message: 'Nettverksfeil ved tilkobling' };
-    });
+/**
+ * Connect an animal to an owner
+ * @param {number} animalId - The animal ID
+ * @param {number} ownerId - The owner ID
+ * @returns {Promise} Promise object with response data
+ */
+async function connectAnimalOwner(animalId, ownerId) {
+    try {
+        const formData = new FormData();
+        formData.append('animal_id', animalId);
+        formData.append('owner_id', ownerId);
+        
+        const response = await fetch(`${API_BASE_URL}connect_animal_owner.php`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('Error connecting animal to owner:', error);
+        return { success: false, message: 'Failed to connect animal to owner' };
+    }
 }

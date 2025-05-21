@@ -1,16 +1,18 @@
 <?php
-$host = "localhost";
-$username = "brukernavn"; // Bytt med din MySQL-brukernavn
-$password = "passord";    // Bytt med ditt MySQL-passord
-$database = "dyreklinikk";
+// Database configuration
+$host = "localhost";       // Database host
+$username = "root";        // Database username
+$password = "";            // Database password
+$database = "dyreklinikk"; // Database name
 
-// Opprett tilkobling
+// Create database connection
 $conn = new mysqli($host, $username, $password, $database);
 
-// Sjekk tilkobling
+// Check connection
 if ($conn->connect_error) {
-    die("Tilkobling mislyktes: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Sett karaktersett til UTF-8
+// Set character set to UTF-8
 $conn->set_charset("utf8");
+?>

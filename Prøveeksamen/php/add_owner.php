@@ -1,34 +1,42 @@
 <?php
+// Include database configuration
 require_once 'db_config.php';
 
-// Sjekk om forespørselen er en POST-forespørsel
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Hent data fra POST-forespørselen
-    $firstname = $conn->real_escape_string($_POST['firstname']);
-    $lastname = $conn->real_escape_string($_POST['lastname']);
-    $phone = $conn->real_escape_string($_POST['phone']);
-    $email = $conn->real_escape_string($_POST['email']);
+// Set header to return JSON
+header('Content-Type: application/json');
+
+// Check if it's a POST request
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get POST data
+    $firstname = $_POST['firstname'] ?? '';
+    $lastname = $_POST['lastname'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+    $email = $_POST['email'] ?? '';
     
-    // SQL for å sette inn ny eier
-    $sql = "INSERT INTO owners (firstname, lastname, phone, email) 
-            VALUES ('$firstname', '$lastname', '$phone', '$email')";
-    
-    if ($conn->query($sql) === TRUE) {
-        $response = array(
-            'status' => 'success',
-            'message' => 'Eier registrert!',
-            'id' => $conn->insert_id
-        );
-    } else {
-        $response = array(
-            'status' => 'error',
-            'message' => 'Feil ved registrering: ' . $conn->error
-        );
+    // Validate input
+    if (empty($firstname) || empty($lastname)) {
+        echo json_encode(['success' => false, 'message' => 'Fornavn og etternavn er påkrevd']);
+        exit;
     }
     
-    // Returner respons som JSON
-    header('Content-Type: application/json');
-    echo json_encode($response);
+    // Prepare and bind
+    $stmt = $conn->prepare("INSERT INTO owners (firstname, lastname, phone, email) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $firstname, $lastname, $phone, $email);
+    
+    // Execute the statement
+    if ($stmt->execute()) {
+        $owner_id = $conn->insert_id;
+        echo json_encode(['success' => true, 'message' => 'Eier registrert!', 'owner_id' => $owner_id]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Feil ved registrering: ' . $stmt->error]);
+    }
+    
+    // Close statement
+    $stmt->close();
+} else {
+    echo json_encode(['success' => false, 'message' => 'Ugyldig forespørsel']);
 }
 
+// Close connection
 $conn->close();
+?>

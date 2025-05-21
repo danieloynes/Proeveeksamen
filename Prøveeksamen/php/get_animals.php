@@ -1,34 +1,39 @@
 <?php
+// Include database configuration
 require_once 'db_config.php';
 
-// Sjekk om forespørselen er en POST-forespørsel
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Hent data fra POST-forespørselen
-    $firstname = $conn->real_escape_string($_POST['firstname']);
-    $lastname = $conn->real_escape_string($_POST['lastname']);
-    $phone = $conn->real_escape_string($_POST['phone']);
-    $email = $conn->real_escape_string($_POST['email']);
-    
-    // SQL for å sette inn ny eier
-    $sql = "INSERT INTO owners (firstname, lastname, phone, email) 
-            VALUES ('$firstname', '$lastname', '$phone', '$email')";
-    
-    if ($conn->query($sql) === TRUE) {
-        $response = array(
-            'status' => 'success',
-            'message' => 'Eier registrert!',
-            'id' => $conn->insert_id
-        );
-    } else {
-        $response = array(
-            'status' => 'error',
-            'message' => 'Feil ved registrering: ' . $conn->error
+// Set header to return JSON
+header('Content-Type: application/json');
+
+// SQL to get all animals with owner information
+$sql = "SELECT a.id, a.name, a.species, a.birth_date, a.owner_id, 
+               o.firstname, o.lastname, o.phone, o.email
+        FROM animals a
+        LEFT JOIN owners o ON a.owner_id = o.id
+        ORDER BY a.name";
+
+$result = $conn->query($sql);
+
+$animals = array();
+
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $animals[] = array(
+            'id' => $row['id'],
+            'name' => $row['name'],
+            'species' => $row['species'],
+            'birth_date' => $row['birth_date'],
+            'owner_id' => $row['owner_id'],
+            'owner_name' => ($row['firstname'] ? $row['firstname'] . ' ' . $row['lastname'] : 'Ingen eier'),
+            'owner_phone' => $row['phone'],
+            'owner_email' => $row['email']
         );
     }
-    
-    // Returner respons som JSON
-    header('Content-Type: application/json');
-    echo json_encode($response);
 }
 
+// Return JSON response
+echo json_encode($animals);
+
+// Close connection
 $conn->close();
+?>

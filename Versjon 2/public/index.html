@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dyreklinikk Administrasjonssystem</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Dyreklinikk Administrasjonssystem</h1>
+        <nav>
+            <ul>
+                <li><a href="#" class="active" id="dashboard-link">Dashboard</a></li>
+                <li><a href="#" id="owners-link">Eiere</a></li>
+                <li><a href="#" id="animals-link">Dyr</a></li>
+                <li><a href="#" id="about-link">Om</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="active-section">
+            <h2>Dashboard</h2>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Totalt antall eiere</h3>
+                    <p id="total-owners">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Totalt antall dyr</h3>
+                    <p id="total-animals">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Dyr uten eier</h3>
+                    <p id="animals-no-owner">0</p>
+                </div>
+            </div>
+            <div class="recent-activity">
+                <h3>Nylige registreringer</h3>
+                <ul id="recent-activity-list">
+                    <!-- Fylles dynamisk -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- Owners Section -->
+        <section id="owners" class="hidden-section">
+            <h2>Eiere</h2>
+            <div class="action-buttons">
+                <button id="add-owner-btn">Legg til ny eier</button>
+            </div>
+            <div class="form-container hidden" id="owner-form-container">
+                <form id="add-owner-form">
+                    <h3>Legg til ny eier</h3>
+                    <div class="form-group">
+                        <label for="firstname">Fornavn:</label>
+                        <input type="text" id="firstname" name="firstname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Etternavn:</label>
+                        <input type="text" id="lastname" name="lastname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefon:</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-post:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit">Lagre</button>
+                        <button type="button" id="cancel-owner-btn">Avbryt</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container">
+                <table id="owners-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fornavn</th>
+                            <th>Etternavn</th>
+                            <th>Telefon</th>
+                            <th>E-post</th>
+                            <th>Handling</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Fylles dynamisk -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Animals Section -->
+        <section id="animals" class="hidden-section">
+            <h2>Dyr</h2>
+            <div class="action-buttons">
+                <button id="add-animal-btn">Legg til nytt dyr</button>
+            </div>
+            <div class="form-container hidden" id="animal-form-container">
+                <form id="add-animal-form">
+                    <h3>Legg til nytt dyr</h3>
+                    <div class="form-group">
+                        <label for="name">Navn:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="species">Art:</label>
+                        <input type="text" id="species" name="species" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="birth_date">Fødselsdato:</label>
+                        <input type="date" id="birth_date" name="birth_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="owner_id">Eier:</label>
+                        <select id="owner_id" name="owner_id">
+                            <option value="">Ingen eier</option>
+                            <!-- Fylles dynamisk -->
+                        </select>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit">Lagre</button>
+                        <button type="button" id="cancel-animal-btn">Avbryt</button>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container">
+                <table id="animals-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Navn</th>
+                            <th>Art</th>
+                            <th>Fødselsdato</th>
+                            <th>Eier</th>
+                            <th>Handling</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Fylles dynamisk -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="hidden-section">
+            <h2>Om Dyreklinikk Administrasjonssystem</h2>
+            <p>Dette er et enkelt administrasjonssystem for dyreklinikker som lar deg holde oversikt over eiere og deres dyr.</p>
+            <p>Systemet bruker:</p>
+            <ul>
+                <li>HTML, CSS og JavaScript for brukergrensesnittet</li>
+                <li>Node.js med Express for backend</li>
+                <li>MySQL for databasen</li>
+            </ul>
+            <p>Versjon 1.0 (2023)</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Dyreklinikk Administrasjonssystem</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
